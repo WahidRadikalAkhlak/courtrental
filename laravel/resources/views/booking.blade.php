@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Padel Arena - Official Venue Booking & Equipment</title>
+    <title>Booking Jadwal - Premium Padel Palu</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -31,7 +31,6 @@
         selectedByCourt: {},
         bookedByCourt: {},
         addonCart: {},
-        ratingValue: 5,
 
         initApp() {
             this.courts.forEach(c => {
@@ -128,29 +127,19 @@
      }"
      x-init="initApp(); $watch('selectedDate', () => fetchAllBookedSlots());">
 
-    <!-- Venue Header -->
+    <!-- Venue Header (Fokus Reservasi Tanpa Widget Rating) -->
     <header class="mb-10 pb-6 border-b border-slate-800/80">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-                <div class="flex items-center gap-2 mb-2">
-                    <span class="px-2.5 py-0.5 rounded-md bg-brand-lime text-slate-950 font-black text-[11px] uppercase tracking-wider">Official Venue</span>
-                    <span class="text-xs text-slate-400">Palu, Sulawesi Tengah</span>
+                <div class="flex items-center gap-3 mb-2">
+                    <a href="{{ route('home') }}" class="text-xs font-bold text-slate-400 hover:text-brand-lime transition">
+                        ← Kembali ke Beranda
+                    </a>
+                    <span class="text-slate-700">|</span>
+                    <span class="px-2.5 py-0.5 rounded-md bg-brand-lime text-slate-950 font-black text-[11px] uppercase tracking-wider">Official Reservation</span>
                 </div>
-                <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Just Padel Club & Arena</h1>
-                <p class="text-xs text-slate-400 mt-1">Standar Lapangan WPT Panoramic · Sewa Raket Pro · Beli Bola Kaleng · Ruang Tunggu AC</p>
-            </div>
-
-            <div class="flex items-center gap-3 bg-brand-card p-3 rounded-2xl border border-slate-800">
-                <div class="flex items-center gap-1.5 text-amber-400">
-                    <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                    <span class="text-lg font-black text-slate-100">
-                        {{ $reviews->count() > 0 ? number_format($reviews->avg('rating'), 1) : '0.0' }}
-                    </span>
-                </div>
-                <div class="text-[11px] text-slate-400 border-l border-slate-700/80 pl-3">
-                    <div class="font-bold text-slate-200">Ulasan Pengguna</div>
-                    <div class="text-slate-400">{{ $reviews->count() }} Review Terdaftar</div>
-                </div>
+                <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Premium Padel Palu</h1>
+                <p class="text-xs text-slate-400 mt-1">📍 Jl. I Gusti Ngurah Rai, Palu, Sulawesi Tengah · Jam Operasional: 07:00 – 22:00 WITA</p>
             </div>
         </div>
     </header>
@@ -159,6 +148,12 @@
         <div class="mb-8 p-4 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-2xl flex items-center gap-3">
             <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
             <span>{{ session('success') }}</span>
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div class="mb-8 p-4 bg-rose-500/10 border border-rose-500/30 text-rose-400 rounded-2xl text-sm">
+            {{ $errors->first() }}
         </div>
     @endif
 
@@ -272,92 +267,6 @@
                             </div>
                         </div>
                     </template>
-                </div>
-            </section>
-
-            <!-- 4. Bagian Ulasan & Form Tulis Ulasan Langsung -->
-            <section class="space-y-6 pt-4 border-t border-slate-800/80">
-                <div>
-                    <span class="text-xs uppercase tracking-wider font-bold text-brand-lime">Review & Pengalaman</span>
-                    <h2 class="text-2xl font-bold mt-1">Ulasan Pengguna Lapangan</h2>
-                    <p class="text-xs text-slate-400 mt-1">Lihat pengalaman komunitas atau berikan penilaian Anda di bawah ini.</p>
-                </div>
-
-                <!-- Form Berikan Ulasan Langsung di Halaman -->
-                <div class="bg-brand-card border border-slate-800/90 rounded-3xl p-6 shadow-xl">
-                    <h3 class="text-base font-bold text-slate-200 mb-1">Tulis Ulasan & Beri Bintang</h3>
-                    <p class="text-xs text-slate-400 mb-4">Bagikan kesan bermain, kualitas rumput turf, AC, atau pelayanan.</p>
-
-                    <form action="{{ route('review.store') }}" method="POST" class="space-y-4">
-                        @csrf
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-medium text-slate-300 mb-1">Nama Lengkap</label>
-                                <input type="text" name="customer_name" required placeholder="Contoh: Andi Wijaya"
-                                       class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-lime">
-                            </div>
-
-                            <div>
-                                <label class="block text-xs font-medium text-slate-300 mb-1">Pilih Lapangan</label>
-                                <select name="field_id" required
-                                        class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-lime">
-                                    @foreach($fields as $court)
-                                        <option value="{{ $court->id }}">{{ $court->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-medium text-slate-300 mb-1.5">Rating Bintang</label>
-                            <input type="hidden" name="rating" :value="ratingValue">
-                            <div class="flex items-center gap-2">
-                                <template x-for="star in [1, 2, 3, 4, 5]" :key="star">
-                                    <button type="button" @click="ratingValue = star" class="text-2xl transition focus:outline-none"
-                                            :class="star <= ratingValue ? 'text-amber-400 hover:scale-110' : 'text-slate-700 hover:text-slate-500'">
-                                        ★
-                                    </button>
-                                </template>
-                                <span class="text-xs text-slate-400 ml-2 font-mono" x-text="ratingValue + ' dari 5 Bintang'"></span>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-medium text-slate-300 mb-1">Ulasan / Komentar</label>
-                            <textarea name="comment" rows="2" required placeholder="Ceritakan bagaimana kondisi lapangan dan fasilitasnya..."
-                                      class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-lime"></textarea>
-                        </div>
-
-                        <div class="flex justify-end">
-                            <button type="submit" class="px-5 py-2.5 bg-brand-lime text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-brand-lime/20 hover:bg-lime-300 transition">
-                                Kirim Ulasan
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Daftar Ulasan -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    @forelse($reviews as $rev)
-                        <div class="bg-brand-card border border-slate-800/80 rounded-2xl p-5 space-y-2">
-                            <div class="flex justify-between items-center">
-                                <span class="font-bold text-sm text-slate-200">{{ $rev->customer_name }}</span>
-                                <div class="flex text-amber-400 text-xs">
-                                    @for($i=1; $i<=$rev->rating; $i++) ★ @endfor
-                                </div>
-                            </div>
-                            <p class="text-xs text-slate-300 italic">"{{ $rev->comment }}"</p>
-                            <div class="text-[10px] text-slate-500 pt-1">Lapangan: {{ $rev->field->name }}</div>
-                        </div>
-                    @empty
-                        <div class="col-span-2 text-center py-10 bg-brand-card/40 border border-slate-800/60 rounded-3xl">
-                            <div class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-500 mx-auto mb-2 text-sm">
-                                ★
-                            </div>
-                            <p class="text-xs text-slate-400 font-medium">Belum ada ulasan dari pengguna.</p>
-                            <p class="text-[11px] text-slate-500 mt-0.5">Jadilah yang pertama memberikan penilaian pengalaman bermain di atas!</p>
-                        </div>
-                    @endforelse
                 </div>
             </section>
         </div>

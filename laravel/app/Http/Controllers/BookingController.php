@@ -11,13 +11,23 @@ use Illuminate\Support\Facades\DB;
 
 class BookingController extends Controller
 {
+
+    public function home()
+    {
+        $fields = Field::where('is_active', true)->get();
+        $rackets = Racket::where('is_active', true)->get();
+        $reviews = Review::with('field')->latest()->take(6)->get();
+        $averageRating = Review::avg('rating') ?: 5.0;
+        $totalReviews = Review::count();
+
+        return view('home', compact('fields', 'rackets', 'reviews', 'averageRating', 'totalReviews'));
+    }
     public function index()
     {
-        $fields = Field::with('reviews')->where('is_active', true)->get();
+        $fields = Field::where('is_active', true)->get();
         $rackets = Racket::where('is_active', true)->where('stock', '>', 0)->get();
-        $reviews = Review::with('field')->latest()->take(6)->get();
 
-        return view('booking', compact('fields', 'rackets', 'reviews'));
+        return view('booking', compact('fields', 'rackets'));
     }
 
     public function storeReview(Request $request)
@@ -31,7 +41,8 @@ class BookingController extends Controller
 
         Review::create($validated);
 
-        return back()->with('success', 'Ulasan dan penilaian bintang berhasil dikirim!');
+        return redirect()->to(route('home') . '#ulasan')
+            ->with('success', 'Terima kasih! Ulasan dan bintang rating Anda berhasil ditambahkan.');
     }
 
     public function getBookedSlots(Request $request)
